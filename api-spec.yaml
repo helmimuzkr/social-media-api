@@ -1,0 +1,297 @@
+openapi: "3.0.2"
+info:
+    title: Social Media API
+    version: "1.0"
+    description: |
+        Social media api adalah sebuah aplikasi yang digunakan untuk menyediakan
+        data yang dibutuhkan oleh client.
+servers:
+    - url: http://localhost:8000/v1
+tags:
+    - name: User
+    - name: Post
+    - name: Comment
+paths:
+    /register:
+        post:
+            tags:
+                - "User"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                first_name:
+                                    type: string
+                                last_name:
+                                    type: string
+                                email:
+                                    type: string
+                                    format: email
+                                password:
+                                    type: string
+                                    format: email
+            responses:
+                201:
+                    description: Success Create User
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    data:
+                                        type: object
+                400:
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+                500:
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+    /login:
+        post:
+            tags:
+                - "User"
+            summary: Login
+            description: Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                password:
+                                    type: string
+                                    format: password
+            responses:
+                200:
+                    description: Login success and return data user
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    data:
+                                        type: object
+                                        properties:
+                                            token:
+                                                type: string
+                                            user:
+                                                type: object
+                                                properties:
+                                                    first_name:
+                                                        type: string
+                                                    last_name:
+                                                        type: string
+                                                    email:
+                                                        type: string
+                                                        format: email
+                400:
+                    description: Bad request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+                500:
+                    description: Internal server error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+    /user:
+        put:
+            tags:
+                - "User"
+            summary: Update
+            description: Update
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                first_name:
+                                    type: string
+                                last_name:
+                                    type: string
+                                email:
+                                    type: string
+                                    format: email
+                                password:
+                                    type: string
+                                    format: password
+            responses:
+                200:
+                    description: Success update user
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    data:
+                                        type: object
+                400:
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+                500:
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+        delete:
+            tags:
+                - "User"
+            summary: Delete
+            description: Delete
+            responses:
+                200:
+                    description: Delete user success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    data:
+                                        type: object
+                400:
+                    description: Bad request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+                500:
+                    description: Internal server error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+    /post:
+        post:
+            tags:
+                - "Post"
+            summary: Add new post
+            description: Add new post
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                caption:
+                                    type: string
+                                image:
+                                    type: string
+                                    format: binary
+            responses:
+                201:
+                    description: Success create new post
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    data:
+                                        type: object
+                400:
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: number
+                                    error:
+                                        type: string
+                          
