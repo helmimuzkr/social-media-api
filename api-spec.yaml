@@ -18,23 +18,12 @@ paths:
                 - "User"
             requestBody:
                 content:
-                    application/json:
+                    application/x-www-form-urlencoded:
                         schema:
-                            type: object
-                            properties:
-                                first_name:
-                                    type: string
-                                last_name:
-                                    type: string
-                                email:
-                                    type: string
-                                    format: email
-                                password:
-                                    type: string
-                                    format: email
+                            $ref: "#/components/schemas/user_request"
             responses:
                 201:
-                    description: Success Create User
+                    description: Success register new user
                     content:
                         application/json:
                             schema:
@@ -43,35 +32,13 @@ paths:
                                     status:
                                         type: string
                                     code:
-                                        type: number
+                                        type: integer
                                     data:
                                         type: object
                 400:
-                    description: Bad Request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
+                    $ref: "#/components/responses/error_bad_response"
                 500:
-                    description: Internal Server Error
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
+                    $ref: "#/components/responses/error_internal_response"
     /login:
         post:
             tags:
@@ -80,79 +47,378 @@ paths:
             description: Login
             requestBody:
                 content:
-                    application/json:
+                    application/x-www-form-urlencoded:
                         schema:
-                            type: object
-                            properties:
-                                email:
-                                    type: string
-                                    format: email
-                                password:
-                                    type: string
-                                    format: password
+                            $ref: "#/components/schemas/login_user_request"
             responses:
                 200:
                     description: Login success and return data user
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    data:
-                                        type: object
-                                        properties:
-                                            token:
-                                                type: string
-                                            user:
-                                                type: object
-                                                properties:
-                                                    first_name:
-                                                        type: string
-                                                    last_name:
-                                                        type: string
-                                                    email:
-                                                        type: string
-                                                        format: email
+                                $ref: "#/components/schemas/user_response"
                 400:
-                    description: Bad request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
+                    $ref: "#/components/responses/error_bad_response"
                 500:
-                    description: Internal server error
+                    $ref: "#/components/responses/error_internal_response"
+    /user:
+        get:
+            tags:
+                - "User"
+            summary: profile
+            security:
+                - jwt_auth: []
+            responses:
+                200:
+                    description: Get profile success and return data user
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
-    /user:
+                                $ref: "#components/schemas/user_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
         put:
             tags:
                 - "User"
             summary: Update
             description: Update
+            security:
+                - jwt_auth: []
             requestBody:
                 content:
                     application/json:
                         schema:
+                            $ref: "#/components/schemas/user_update_request"
+            responses:
+                200:
+                    description: Success update user data
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: integer
+                                    data:
+                                        type: object
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+        delete:
+            tags:
+                - "User"
+            summary: Delete
+            description: Delete
+            security:
+                - jwt_auth: []
+            responses:
+                200:
+                    description: Success delete user
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: integer
+                                    data:
+                                        type: object
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+    /post:
+        post:
+            tags:
+                - "Post"
+            summary: Add new post
+            description: Add new post
+            security:
+                - jwt_auth: []
+
+            requestBody:
+                $ref: "#/components/requestBodies/post_request"
+            responses:
+                201:
+                    description: Success create new post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/post_response"
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+        get:
+            tags:
+                - "Post"
+            summary: Get all post
+            responses:
+                200:
+                    description: Get post success and return data user
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/list_post_response"
+                            example:
+                                status: OK
+                                code: 200
+                                data:
+                                    - id: 1
+                                      caption: "Jam segini masih nugas--"
+                                      image: "image.jpg"
+                                      created_at: "16-01-2023"
+                                      author:
+                                          id: 1
+                                          first_name: john
+                                    - id: 2
+                                      caption: "Check this out!"
+                                      image: "meme.jpg"
+                                      created_at: "16-01-2023"
+                                      author:
+                                          id: 3
+                                          first_name: doe
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+    /post/{id}:
+        get:
+            tags:
+                - "Post"
+            summary: Get post by id
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    description: Success get post by id
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/list_post_by_id_response"
+                            example:
+                                status: OK
+                                code: 200
+                                data:
+                                    - id: 1
+                                      caption: "New keyboard!"
+                                      image: "keebs.jpg"
+                                      created_at: "16-01-2023"
+                                    - id: 2
+                                      caption: "Want to sell this headset"
+                                      image: "headset.jpg"
+                                      created_at: "16-01-2023"
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                404:
+                    $ref: "#/components/responses/error_not_found_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+        put:
+            tags:
+                - "Post"
+            summary: Update post by id
+            description: Update post by id
+            security:
+                - jwt_auth: []
+            requestBody:
+                $ref: "#/components/requestBodies/post_request"
+            responses:
+                200:
+                    description: Success update post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/post_response"
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                404:
+                    $ref: "#/components/responses/error_not_found_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+        delete:
+            tags:
+                - "Post"
+            summary: Delete post by id
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            security:
+                - jwt_auth: []
+            responses:
+                200:
+                    description: Success delete post by id
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: integer
+                                    data:
+                                        type: object
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                404:
+                    $ref: "#/components/responses/error_not_found_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+    /comment/{post_id}:
+        post:
+            tags:
+                - "Comment"
+            summary: Add comment on post
+            security:
+                - jwt_auth: []
+            parameters:
+                - name: post_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/x-www-form-urlencoded:
+                        schema:
+                            type: object
+                            properties:
+                                comment:
+                                    type: string
+            responses:
+                201:
+                    description: Success add comment
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        example: Created
+                                    code:
+                                        type: integer
+                                        example: 201
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 2
+                                            comment:
+                                                type: string
+                                                example: how can?
+                                            created_at:
+                                                type: string
+                                                example: 16-01-2023
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                404:
+                    $ref: "#/components/responses/error_not_found_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+        get:
+            tags:
+                - "Comment"
+            summary: Get all comment post
+            parameters:
+                - name: post_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    description: Success get all comments
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/list_comment_response"
+                            example:
+                                status: OK
+                                code: 200
+                                data:
+                                    - id: 1
+                                      name: john
+                                      comment: awesome!
+                                      created_at: 16-01-2023
+                                    - id: 2
+                                      name: doe
+                                      comment: how can??
+                                      created_at: 16-01-2023
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                404:
+                    $ref: "#/components/responses/error_not_found_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+components:
+    securitySchemes:
+        jwt_auth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+            description: "Use token for authorization"
+    schemas:
+        ## USER SCHEMAS
+        user_request:
+            type: object
+            properties:
+                first_name:
+                    type: string
+                last_name:
+                    type: string
+                email:
+                    type: string
+                    format: email
+                password:
+                    type: string
+                    format: email
+        user_update_request:
+            type: object
+            properties:
+                first_name:
+                    type: string
+                last_name:
+                    type: string
+                email:
+                    type: string
+                    format: email
+        login_user_request:
+            type: object
+            properties:
+                email:
+                    type: string
+                    format: email
+                password:
+                    type: string
+                    format: password
+        user_response:
+            type: object
+            properties:
+                status:
+                    type: string
+                    example: OK
+                code:
+                    type: integer
+                    example: 200
+                data:
+                    type: object
+                    properties:
+                        token:
+                            type: string
+                        user:
                             type: object
                             properties:
                                 first_name:
@@ -162,136 +428,160 @@ paths:
                                 email:
                                     type: string
                                     format: email
-                                password:
-                                    type: string
-                                    format: password
-            responses:
-                200:
-                    description: Success update user
-                    content:
-                        application/json:
-                            schema:
+        # POST SCHEMAS
+        list_post_response:
+            type: object
+            properties:
+                status:
+                    type: string
+                code:
+                    type: integer
+                data:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                            caption:
+                                type: string
+                            image:
+                                type: string
+                            created_at:
+                                type: string
+                            author:
                                 type: object
                                 properties:
-                                    status:
+                                    id:
+                                        type: integer
+                                    first_name:
                                         type: string
-                                    code:
-                                        type: number
-                                    data:
-                                        type: object
-                400:
-                    description: Bad Request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
-                500:
-                    description: Internal Server Error
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
-        delete:
-            tags:
-                - "User"
-            summary: Delete
-            description: Delete
-            responses:
-                200:
-                    description: Delete user success
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    data:
-                                        type: object
-                400:
-                    description: Bad request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
-                500:
-                    description: Internal server error
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
-    /post:
-        post:
-            tags:
-                - "Post"
-            summary: Add new post
-            description: Add new post
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            type: object
-                            properties:
-                                caption:
-                                    type: string
-                                image:
-                                    type: string
-                                    format: binary
-            responses:
-                201:
-                    description: Success create new post
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    data:
-                                        type: object
-                400:
-                    description: Bad Request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: number
-                                    error:
-                                        type: string
-                          
+        list_post_by_id_response:
+            type: object
+            properties:
+                status:
+                    type: string
+                code:
+                    type: integer
+                data:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                            caption:
+                                type: string
+                            image:
+                                type: string
+                            created_at:
+                                type: string
+        post_response:
+            type: object
+            properties:
+                status:
+                    type: string
+                    example: OK
+                code:
+                    type: integer
+                    example: 200
+                data:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            example: 1
+                        caption:
+                            type: string
+                            example: New keyboard!
+                        image:
+                            type: string
+                            example: keebs.jpg
+                        created_at:
+                            type: string
+                            example: 16-01-2023
+        # COMMENT SCHEMAS
+        list_comment_response:
+            type: object
+            properties:
+                status:
+                    type: string
+                code:
+                    type: integer
+                data:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                            first_name:
+                                type: string
+                            comment:
+                                type: string
+                            created_at:
+                                type: string
+    requestBodies:
+        # POST REQUEST
+        post_request:
+            content:
+                multipart/form-data:
+                    schema:
+                        type: object
+                        properties:
+                            caption:
+                                type: string
+                                example: "Capek one piece ga tamat-tamat"
+                            image:
+                                type: string
+                                format: binary
+    responses:
+        ## ERROR RESPONSE
+        error_bad_response:
+            description: Bad Request
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            status:
+                                type: string
+                                example: BAD REQUEST
+                            code:
+                                type: integer
+                                example: 400
+                            error:
+                                type: string
+                                example: bad request input invalid
+        error_not_found_response:
+            description: Not found
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            status:
+                                type: string
+                                example: NOT FOUND
+                            code:
+                                type: integer
+                                example: 404
+                            error:
+                                type: string
+                                example: data not found
+        error_internal_response:
+            description: Internal server error
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            status:
+                                type: string
+                                example: INTERNAL SERVER ERROR
+                            code:
+                                type: integer
+                                example: 500
+                            error:
+                                type: string
+                                example: server error
