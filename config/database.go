@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func openDB(cfg *AppConfig) *gorm.DB {
+func OpenDB(cfg *AppConfig) *gorm.DB {
 	var db *gorm.DB
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
@@ -26,3 +26,7 @@ func openDB(cfg *AppConfig) *gorm.DB {
 
 	return db
 }
+
+// func gormMigrartion(db *gorm.DB) {
+
+// }
