@@ -193,19 +193,15 @@ paths:
                                 code: 200
                                 data:
                                     - id: 1
-                                      caption: "Jam segini masih nugas--"
-                                      image: "image.jpg"
+                                      caption: Jam segini masih nugas--
+                                      image: image.jpg
                                       created_at: "16-01-2023"
-                                      author:
-                                          id: 1
-                                          first_name: john
+                                      author: John
                                     - id: 2
-                                      caption: "Check this out!"
-                                      image: "meme.jpg"
-                                      created_at: "16-01-2023"
-                                      author:
-                                          id: 3
-                                          first_name: doe
+                                      caption: Check this out!
+                                      image: meme.jpg
+                                      created_at: 16-01-2023
+                                      author: Doe
                 500:
                     $ref: "#/components/responses/error_internal_response"
     /post/{id}:
@@ -471,12 +467,7 @@ components:
                             created_at:
                                 type: string
                             author:
-                                type: object
-                                properties:
-                                    id:
-                                        type: integer
-                                    first_name:
-                                        type: string
+                                type: string
         list_post_by_id_response:
             type: object
             properties:
