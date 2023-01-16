@@ -21,17 +21,17 @@ type PostHandler interface {
 }
 
 type PostService interface {
-	Create(post Core) (Core, error)
+	Create(newPost Core) (Core, error)
 	GetAll() ([]Core, error)
 	MyPost(token interface{}) ([]Core, error)
-	Update(token interface{}, post Core) ([]Core, error)
+	Update(token interface{}, updatePost Core) ([]Core, error)
 	Delete(token interface{}, postID int) error
 }
 
 type PostRepository interface {
-	Create(post Core) (Core, error)
+	Create(newPost Core) (Core, error)
 	GetAll() ([]Core, error)
 	MyPost(userID int) ([]Core, error)
-	Update(userID int, postID int, post Core) ([]Core, error)
+	Update(userID int, postID int, updatePost Core) ([]Core, error)
 	Delete(userID int, postID int) error
 }
