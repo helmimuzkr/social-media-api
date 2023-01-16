@@ -10,6 +10,7 @@ import (
 func main() {
 	c := config.GetConfig()
 	db := config.OpenDB(c)
+	config.GormMigrartion(db)
 
 	e := echo.New()
 	if err := e.Start(":8000"); err != nil {
