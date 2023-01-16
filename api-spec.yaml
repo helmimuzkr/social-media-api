@@ -67,7 +67,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: "#components/schemas/user_response"
+                                $ref: "#/components/schemas/user_response"
                 500:
                     $ref: "#/components/responses/error_internal_response"
         put:
@@ -89,6 +89,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/user_response"
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
+        delete:
+            tags:
+                - "User"
+            summary: Delete
+            description: Delete
+            security:
+                - jwt_auth: []
+            responses:
+                200:
+                    description: Success delete user
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    code:
+                                        type: integer
+                                    data:
+                                        type: object
                 400:
                     $ref: "#/components/responses/error_bad_response"
                 500:
@@ -115,31 +140,6 @@ paths:
             responses:
                 200:
                     description: Success update user data
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    status:
-                                        type: string
-                                    code:
-                                        type: integer
-                                    data:
-                                        type: object
-                400:
-                    $ref: "#/components/responses/error_bad_response"
-                500:
-                    $ref: "#/components/responses/error_internal_response"
-        delete:
-            tags:
-                - "User"
-            summary: Delete
-            description: Delete
-            security:
-                - jwt_auth: []
-            responses:
-                200:
-                    description: Success delete user
                     content:
                         application/json:
                             schema:
@@ -247,6 +247,12 @@ paths:
             description: Update post by id
             security:
                 - jwt_auth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
             requestBody:
                 $ref: "#/components/requestBodies/post_request"
             responses:
