@@ -5,6 +5,7 @@ import (
 )
 
 type Core struct {
+	ID        uint
 	Caption   string
 	Image     string
 	Author    string
