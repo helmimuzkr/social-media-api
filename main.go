@@ -26,6 +26,8 @@ func main() {
 
 	e := echo.New()
 
+	e.POST("/posts", postHandler.Create())
+
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)
 	}
