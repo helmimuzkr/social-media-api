@@ -14,23 +14,43 @@ func NewPostRepository(db *gorm.DB) post.PostRepository {
 	return &postRepository{db: db}
 }
 
-func (pr *postRepository) Create(newPost post.Core) (post.Core, error) {
+func (pr *postRepository) Create(userID uint, newPost post.Core) error {
+	model := ToModel(newPost)
+	tx := pr.db.Where("user_id = ?", userID).Create(&model)
+	if tx.Error != nil {
+		return tx.Error
+	}
 
-	return post.Core{}, nil
+	return nil
 }
+
+func (pr *postRepository) MyPost(userID uint) ([]post.Core, error) {
+
+	return nil, nil
+}
+
+func (pr *postRepository) Update(userID uint, postID uint, updatePost post.Core) error {
+
+	return nil
+}
+
+func (pr *postRepository) Delete(userID uint, postID uint) error {
+
+	return nil
+
+}
+
+func (pr *postRepository) GetByUserID(userID uint) ([]post.Core, error) {
+
+	return nil, nil
+}
+
+func (pr *postRepository) GetByID(postID uint) ([]post.Core, error) {
+
+	return nil, nil
+}
+
 func (pr *postRepository) GetAll() ([]post.Core, error) {
 
 	return nil, nil
-}
-func (pr *postRepository) MyPost(userID int) ([]post.Core, error) {
-
-	return nil, nil
-}
-func (pr *postRepository) Update(userID int, postID int, updatePost post.Core) ([]post.Core, error) {
-
-	return nil, nil
-}
-func (pr *postRepository) Delete(userID int, postID int) error {
-
-	return nil
 }

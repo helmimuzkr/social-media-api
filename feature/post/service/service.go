@@ -1,7 +1,11 @@
 package service
 
 import (
+	"errors"
+	"log"
+	"mime/multipart"
 	"social-media-app/feature/post"
+	"social-media-app/helper"
 
 	"github.com/go-playground/validator"
 )
@@ -18,22 +22,58 @@ func NewPostService(r post.PostRepository, v *validator.Validate) post.PostServi
 	}
 }
 
-func (ps *postService) Create(newPost post.Core) (post.Core, error) {
-	return post.Core{}, nil
-}
+func (ps *postService) Create(token interface{}, newPost post.Core, fileHeader *multipart.FileHeader) error {
+	userID := helper.ExtractToken(token)
+	if userID < 0 {
+		return errors.New("token invalid")
+	}
 
-func (ps *postService) GetAll() ([]post.Core, error) {
-	return nil, nil
+	if fileHeader != nil {
+		file, _ := fileHeader.Open()
+		uploadURL, err := helper.Upload(file, "/post")
+		if err != nil {
+			log.Println(err)
+			return errors.New("failed upload image")
+		}
+		newPost.Image = uploadURL
+	}
+
+	err := ps.validate.Struct(newPost)
+	if err != nil {
+		log.Println(err)
+		helper.ValidationErrorHandle(err)
+		return err
+	}
+
+	err = ps.repo.Create(1, newPost)
+	if err != nil {
+		log.Println(err)
+		return errors.New("internal server error")
+	}
+
+	return nil
 }
 
 func (ps *postService) MyPost(token interface{}) ([]post.Core, error) {
 	return nil, nil
 }
 
-func (ps *postService) Update(token interface{}, updatePost post.Core) ([]post.Core, error) {
+func (ps *postService) Update(token interface{}, updatePost post.Core, file *multipart.FileHeader) error {
+	return nil
+}
+
+func (ps *postService) Delete(token interface{}, postID uint) error {
+	return nil
+}
+
+func (ps *postService) GetByUserID(userID uint) ([]post.Core, error) {
 	return nil, nil
 }
 
-func (ps *postService) Delete(token interface{}, postID int) error {
-	return nil
+func (ps *postService) GetByID(postID uint) ([]post.Core, error) {
+	return nil, nil
+}
+
+func (ps *postService) GetAll() ([]post.Core, error) {
+	return nil, nil
 }
