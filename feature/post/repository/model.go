@@ -13,13 +13,15 @@ type Post struct {
 	Image   string
 }
 
-type MyPost struct {
+type UserPost struct {
 	ID        uint
 	Caption   string
 	Image     string
 	FirstName string
 	LastName  string
+	Avatar    string
 	CreatedAt string
+	UpdatedAt string
 }
 
 // Convert from model to core
@@ -29,6 +31,7 @@ func ToCore(model Post) post.Core {
 		Caption:   model.Caption,
 		Image:     model.Image,
 		CreatedAt: model.CreatedAt.String(),
+		UpdatedAt: model.UpdatedAt.String(),
 	}
 }
 
@@ -42,7 +45,7 @@ func ToModel(core post.Core) Post {
 }
 
 // Convert from slice of model to slice of core
-func ToSliceCore(models []MyPost) []post.Core {
+func ToSliceCore(models []UserPost) []post.Core {
 	listPost := []post.Core{}
 	for _, v := range models {
 		post := post.Core{
@@ -50,7 +53,9 @@ func ToSliceCore(models []MyPost) []post.Core {
 			Caption:   v.Caption,
 			Image:     v.Image,
 			Author:    v.FirstName + v.LastName,
+			Avatar:    v.Avatar,
 			CreatedAt: v.CreatedAt,
+			UpdatedAt: v.UpdatedAt,
 		}
 
 		listPost = append(listPost, post)
