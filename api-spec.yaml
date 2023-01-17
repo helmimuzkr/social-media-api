@@ -326,13 +326,13 @@ paths:
                     $ref: "#/components/responses/error_not_found_response"
                 500:
                     $ref: "#/components/responses/error_internal_response"
-    /posts/{id}:
+    /posts/{user_id}:
         get:
             tags:
                 - "Post"
-            summary: Get post by id
+            summary: Get post by id user
             parameters:
-                - name: id
+                - name: user_id
                   in: path
                   required: true
                   schema:
@@ -363,6 +363,40 @@ paths:
                     $ref: "#/components/responses/error_not_found_response"
                 500:
                     $ref: "#/components/responses/error_internal_response"
+    /posts/{post_id}:
+        get:
+            tags:
+                - "Post"
+            summary: Get post by id post
+            parameters:
+                - name: post_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    description: Success get post by id
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/post_by_id_response"
+                            example:
+                                status: success get post
+                                data:
+                                    id: 1
+                                    caption: Jam segini masih nugas--
+                                    image: image.jpg
+                                    author: john
+                                    avatar: john.jpg
+                                    created_at: 15-01-2023
+                                    updated_at: null
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                404:
+                    $ref: "#/components/responses/error_not_found_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
     /posts/list:
         get:
             tags:
@@ -382,12 +416,14 @@ paths:
                                       caption: Jam segini masih nugas--
                                       image: image.jpg
                                       author: john
+                                      avatar: john.jpeg
                                       created_at: 15-01-2023
                                       updated_at: null
                                     - id: 2
                                       caption: Check this out!
                                       image: meme.jpg
                                       author: doe
+                                      avatar: doe.jpeg
                                       created_at: 15-01-2023
                                       updated_at: 16-01-2023
                 500:
@@ -557,6 +593,28 @@ components:
                             type: string
                             example: avatar.jpg
         # POST SCHEMAS
+        post_by_id_response:
+            type: object
+            properties:
+                message:
+                    type: string
+                data:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                        caption:
+                            type: string
+                        image:
+                            type: string
+                        author:
+                            type: string
+                        avatar:
+                            type: string
+                        created_at:
+                            type: string
+                        updated_at:
+                            type: string
         list_post_response:
             type: object
             properties:
@@ -574,6 +632,8 @@ components:
                             image:
                                 type: string
                             author:
+                                type: string
+                            avatar:
                                 type: string
                             created_at:
                                 type: string
