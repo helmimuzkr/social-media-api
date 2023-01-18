@@ -56,8 +56,22 @@ func (uq *userQuery) ProfileRepo(id uint) (user.Core, error) {
 }
 
 func (uq *userQuery) UpdateRepo(id uint, updateUser user.Core) (user.Core, error) {
-	
-	return user.Core{}, nil
+	log.Println(id)
+	cnv := CoreToUser(updateUser)
+	qry := uq.db.Model(&User{}).Where("id = ?", id).Updates(&cnv)
+
+	if qry.RowsAffected <= 0 {
+		log.Println("No data processed")
+		return user.Core{}, errors.New("user not found, no data updated")
+	}
+
+	err := qry.Error
+	if err != nil {
+		log.Println("Query find error", err.Error())
+		return user.Core{}, err
+	}
+	log.Println(cnv)
+	return UserToCore(cnv), nil
 }
 
 func (uq *userQuery) RemoveRepo(id uint) error {
