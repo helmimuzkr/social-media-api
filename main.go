@@ -12,6 +12,10 @@ import (
 	_commentService "social-media-app/feature/comment/service"
 
 	"github.com/go-playground/validator/v10"
+	"social-media-app/features/user/handler"
+	"social-media-app/features/user/repository"
+	"social-media-app/features/user/services"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -50,6 +54,25 @@ func main() {
 
 	e.POST("/comments", commentHandler.Add(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.GET("/comments", commentHandler.GetAll())
+	config.Migrate(db)         // membuat tabel otomatis
+
+	e := echo.New()
+
+	userRepo := repository.New(db)
+	userSrv := services.New(userRepo)
+	userHdl := handler.New(&userSrv)
+	
+	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.CORS())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig {
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+
+	e.POST("/register", userHdl.RegisterHand())
+	// e.POST("/login", userHdl.LoginHand())
+		
+	userLogin := e.Group("/users")
+	userLogin.Use(middleware.JWT([]byte(config.JWT_KEY)))
 
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)
