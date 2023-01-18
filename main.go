@@ -66,6 +66,8 @@ func main() {
 	userLogin := e.Group("/users")
 	userLogin.Use(middleware.JWT([]byte(config.JWT_KEY)))
 
+	userLogin.GET("", userHdl.ProfileHand())
+
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)
 	}

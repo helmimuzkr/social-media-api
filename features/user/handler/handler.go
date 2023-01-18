@@ -49,11 +49,16 @@ func (uc *userControll) LoginHand() echo.HandlerFunc {
 	}
 }
 
-// func (uc *userControll) ProfileHand() echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-
-// 	}
-// }
+func (uc *userControll) ProfileHand() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		token := c.Get("user")
+		res, err := uc.srv.ProfileServ(token)
+		if err != nil {
+			return c.JSON(ErrorResponse(err.Error()))
+		}
+		return c.JSON(SuccessResponse(http.StatusOK, "berhasil lihat profil", res))
+	}
+}
 
 // func (uc *userControll) UpdateHand() echo.HandlerFunc {
 // 	return func(c echo.Context) error {

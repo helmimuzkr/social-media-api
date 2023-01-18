@@ -39,8 +39,20 @@ func (uq *userQuery) LoginRepo(email string) (user.Core, error) {
 }
 
 func (uq *userQuery) ProfileRepo(id uint) (user.Core, error) {
+	res := User{}
+	qry := uq.db.First(&res, id)
 
-	return user.Core{}, nil
+	if qry.RowsAffected <= 0 {
+		log.Println("No data processed")
+		return user.Core{}, errors.New("user not found, no data displayed")
+	}
+
+	err := qry.Error
+	if err != nil {
+		log.Println("Query first error", err.Error())
+		return user.Core{}, errors.New("data failed to displayed")
+	}
+	return UserToCore(res), nil
 }
 
 func (uq *userQuery) UpdateRepo(id uint, updateUser user.Core) (user.Core, error) {

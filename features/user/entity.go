@@ -16,7 +16,7 @@ type Core struct {
 type UserHandler interface {
 	RegisterHand() echo.HandlerFunc
 	LoginHand() echo.HandlerFunc
-// 	ProfileHand() echo.HandlerFunc
+	ProfileHand() echo.HandlerFunc
 // 	UpdateHand() echo.HandlerFunc
 // 	RemoveHand() echo.HandlerFunc
 }
@@ -24,7 +24,7 @@ type UserHandler interface {
 type UserService interface {
 	RegisterServ(newUser Core) (Core, error)
 	LoginServ(email, password string) (string, Core, error)
-// 	ProfileServ(token interface{}) (Core, error)
+	ProfileServ(token interface{}) (Core, error)
 // 	UpdateServ(token interface{}, updateUser Core) (Core, error)
 // 	RemoveServ(token interface{}) error
 // 	FileUpload(file FileCore) (string, error)
@@ -33,7 +33,7 @@ type UserService interface {
 type UserRepository interface {
 	RegisterRepo(newUser Core) (Core, error)
 	LoginRepo(email string) (Core, error)
-// 	ProfileRepo(id uint) (Core, error)
+	ProfileRepo(id uint) (Core, error)
 // 	UpdateRepo(id uint, updateUser Core) (Core, error)
 // 	RemoveRepo(id uint) error
 }

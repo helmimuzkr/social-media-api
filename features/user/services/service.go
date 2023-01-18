@@ -8,6 +8,8 @@ import (
 	"log"
 	"social-media-app/config"
 	"social-media-app/features/user"
+	"social-media-app/helper"
+
 
 	"strings"
 	"time"
@@ -74,9 +76,25 @@ func (us *userService) LoginServ(email, password string) (string, user.Core, err
 	return token, res, nil
 }
 
-// func (us *userService) ProfileServ(token interface{}) (user.Core, error) {
-	
-// }
+func (us *userService) ProfileServ(token interface{}) (user.Core, error) {
+	id := uint(helper.ExtractToken(token))
+	log.Println(id)
+	if id <= 0 {
+		return user.Core{}, errors.New("data tidak ditemukan")
+	}
+
+	res, err := us.qry.ProfileRepo(id)
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") { // Kalau error mengandung kata "not found"
+			msg = "data tidak ditemukan"
+		} else {
+			msg = "terdapat masalah pada server"
+		}
+		return user.Core{}, errors.New(msg)
+	}
+	return res, nil
+}
 
 // func (us *userService) UpdateServ(token interface{}, updateUser user.Core) (user.Core, error) {
 	
