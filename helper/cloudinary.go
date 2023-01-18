@@ -2,19 +2,17 @@ package helper
 
 import (
 	"context"
-	"log"
 	"social-media-app/config"
 
 	"github.com/cloudinary/cloudinary-go/v2"
-	"github.com/cloudinary/cloudinary-go/v2/api"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
-func Upload(file interface{}, path string) (string, error) {
+func UploadFile(file interface{}, path string) (*uploader.UploadResult, error) {
 	// create cloudinary with configuration
 	cld, err := cloudinary.NewFromParams(config.CloudinaryName, config.CloudinaryApiKey, config.CloudinaryApiScret)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// upload file
@@ -22,14 +20,33 @@ func Upload(file interface{}, path string) (string, error) {
 		context.Background(),
 		file,
 		uploader.UploadParams{
-			UniqueFilename: api.Bool(true),
-			ResourceType:   "image",
-			Folder:         config.CloudinaryUploadFolder + path,
+			ResourceType: "image",
+			Folder:       config.CloudinaryUploadFolder + path,
 		})
 	if err != nil {
-		log.Fatalf("Failed to upload file, %v\n", err)
-		return "", err
+		return nil, err
 	}
 
-	return uploadResult.SecureURL, nil
+	return uploadResult, nil
+}
+
+func DestroyFile(publicID string) error {
+	// create cloudinary with configuration
+	cld, err := cloudinary.NewFromParams(config.CloudinaryName, config.CloudinaryApiKey, config.CloudinaryApiScret)
+	if err != nil {
+		return err
+	}
+
+	// upload file
+	_, err = cld.Upload.Destroy(
+		context.Background(),
+		uploader.DestroyParams{
+			PublicID: publicID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
