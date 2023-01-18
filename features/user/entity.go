@@ -18,7 +18,7 @@ type UserHandler interface {
 	LoginHand() echo.HandlerFunc
 	ProfileHand() echo.HandlerFunc
 	UpdateHand() echo.HandlerFunc
-// 	RemoveHand() echo.HandlerFunc
+	RemoveHand() echo.HandlerFunc
 }
 
 type UserService interface {
@@ -26,7 +26,7 @@ type UserService interface {
 	LoginServ(email, password string) (string, Core, error)
 	ProfileServ(token interface{}) (Core, error)
 	UpdateServ(token interface{}, updateUser Core) (Core, error)
-// 	RemoveServ(token interface{}) error
+	RemoveServ(token interface{}) error
 // 	FileUpload(file FileCore) (string, error)
 }
 
@@ -35,5 +35,5 @@ type UserRepository interface {
 	LoginRepo(email string) (Core, error)
 	ProfileRepo(id uint) (Core, error)
 	UpdateRepo(id uint, updateUser Core) (Core, error)
-// 	RemoveRepo(id uint) error
+	RemoveRepo(id uint) error
 }

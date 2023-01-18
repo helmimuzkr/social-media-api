@@ -77,8 +77,13 @@ func (uc *userControll) UpdateHand() echo.HandlerFunc {
 	}
 }
 
-// func (uc *userControll) RemoveHand() echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-
-// 	}
-// }
+func (uc *userControll) RemoveHand() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		token := c.Get("user")
+		err := uc.srv.RemoveServ(token)
+		if err != nil {
+			return c.JSON(ErrorResponse(err.Error()))
+		}
+		return c.JSON(http.StatusOK, "Akun berhasil dihapus")
+	}
+}

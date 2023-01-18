@@ -75,6 +75,17 @@ func (uq *userQuery) UpdateRepo(id uint, updateUser user.Core) (user.Core, error
 }
 
 func (uq *userQuery) RemoveRepo(id uint) error {
+	qry := uq.db.Delete(&User{}, id)
 
+	if qry.RowsAffected <= 0 {
+		log.Println("No data processed")
+		return errors.New("user not found, no data deleted")
+	}
+
+	err := qry.Error
+	if err != nil {
+		log.Println("Query delete error", err.Error())
+		return errors.New("data failed to delete")
+	}
 	return nil
 }

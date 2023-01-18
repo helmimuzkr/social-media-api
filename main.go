@@ -68,6 +68,7 @@ func main() {
 
 	userLogin.GET("", userHdl.ProfileHand())
 	userLogin.PUT("", userHdl.UpdateHand())
+	userLogin.DELETE("", userHdl.RemoveHand())
 
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)

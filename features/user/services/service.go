@@ -124,7 +124,22 @@ func (us *userService) UpdateServ(token interface{}, updateUser user.Core) (user
 	return res, nil
 }
 
-// func (us *userService) RemoveServ(token interface{}) error {
-	
-// }
+func (us *userService) RemoveServ(token interface{}) error {
+	id := uint(helper.ExtractToken(token))
+	if id <= 0 {
+		return errors.New("data tidak ditemukan")
+	}
+
+	err := us.qry.RemoveRepo(id)
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") { // Kalau error mengandung kata "not found"
+			msg = "data tidak ditemukan"
+		} else {
+			msg = "terdapat masalah pada server"
+		}
+		return errors.New(msg)
+	}
+	return nil
+}
 
