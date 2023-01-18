@@ -277,6 +277,7 @@ paths:
                     $ref: "#/components/responses/error_bad_response"
                 500:
                     $ref: "#/components/responses/error_internal_response"
+    /posts/{post_id}:
         put:
             tags:
                 - "Post"
@@ -326,6 +327,39 @@ paths:
                     $ref: "#/components/responses/error_not_found_response"
                 500:
                     $ref: "#/components/responses/error_internal_response"
+        get:
+            tags:
+                - "Post"
+            summary: Get post by id post
+            parameters:
+                - name: post_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    description: Success get post by id
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/post_by_id_response"
+                            example:
+                                status: success get post
+                                data:
+                                    id: 1
+                                    caption: Jam segini masih nugas--
+                                    image: image.jpg
+                                    author: john
+                                    avatar: john.jpg
+                                    created_at: 15-01-2023
+                                    updated_at: null
+                400:
+                    $ref: "#/components/responses/error_bad_response"
+                404:
+                    $ref: "#/components/responses/error_not_found_response"
+                500:
+                    $ref: "#/components/responses/error_internal_response"
     /posts/{user_id}:
         get:
             tags:
@@ -357,40 +391,6 @@ paths:
                                       image: meme.jpg
                                       created_at: 15-01-2023
                                       updated_at: 16-01-2023
-                400:
-                    $ref: "#/components/responses/error_bad_response"
-                404:
-                    $ref: "#/components/responses/error_not_found_response"
-                500:
-                    $ref: "#/components/responses/error_internal_response"
-    /posts/{post_id}:
-        get:
-            tags:
-                - "Post"
-            summary: Get post by id post
-            parameters:
-                - name: post_id
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-            responses:
-                200:
-                    description: Success get post by id
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/post_by_id_response"
-                            example:
-                                status: success get post
-                                data:
-                                    id: 1
-                                    caption: Jam segini masih nugas--
-                                    image: image.jpg
-                                    author: john
-                                    avatar: john.jpg
-                                    created_at: 15-01-2023
-                                    updated_at: null
                 400:
                     $ref: "#/components/responses/error_bad_response"
                 404:
