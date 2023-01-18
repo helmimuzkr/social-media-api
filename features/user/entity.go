@@ -1,6 +1,8 @@
 package user
 
 import (
+	"mime/multipart"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -13,6 +15,10 @@ type Core struct {
 	Avatar    string
 }
 
+type FileCore struct {
+	File multipart.File `json:"file,omitempty" validate:"required"`
+}
+
 type UserHandler interface {
 	RegisterHand() echo.HandlerFunc
 	LoginHand() echo.HandlerFunc
@@ -23,11 +29,11 @@ type UserHandler interface {
 
 type UserService interface {
 	RegisterServ(newUser Core) (Core, error)
-	LoginServ(email, password string) (string, Core, error)
+	LoginServ(email, password string) (string, Core, error) // Email untuk decrypt
 	ProfileServ(token interface{}) (Core, error)
 	UpdateServ(token interface{}, updateUser Core) (Core, error)
 	RemoveServ(token interface{}) error
-// 	FileUpload(file FileCore) (string, error)
+	FileUpload(file FileCore) (string, error)
 }
 
 type UserRepository interface {

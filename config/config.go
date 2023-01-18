@@ -3,13 +3,18 @@ package config
 import (
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 var (
+<<<<<<< HEAD
 	JWT_KEY string
 
+=======
+	JWT_KEY                string
+>>>>>>> b870c4b (feat: tambah fitur update user untuk upload avatar)
 	CloudinaryName         string
 	CloudinaryApiKey       string
 	CloudinaryApiScret     string
@@ -20,7 +25,7 @@ type AppConfig struct {
 	DBUser string
 	DBPass string
 	DBHost string
-	DBPort string
+	DBPort int
 	DBName string
 }
 
@@ -36,7 +41,9 @@ func GetConfig() *AppConfig {
 	appConfig.DBName = os.Getenv("DB_NAME")
 	appConfig.DBPass = os.Getenv("DB_PASS")
 	appConfig.DBHost = os.Getenv("DB_HOST")
-	appConfig.DBPort = os.Getenv("DB_PORT")
+	readData := os.Getenv("DB_PORT")
+	appConfig.DBPort, _ = strconv.Atoi(readData)
+	
 
 	JWT_KEY = os.Getenv("JWT_KEY")
 

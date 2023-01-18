@@ -14,7 +14,7 @@ import (
 func OpenDB(cfg *AppConfig) *gorm.DB {
 	var db *gorm.DB
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		cfg.DBUser,
 		cfg.DBPass,
 		cfg.DBHost,
@@ -30,6 +30,7 @@ func OpenDB(cfg *AppConfig) *gorm.DB {
 	return db
 }
 
+<<<<<<< HEAD
 func GormMigrartion(db *gorm.DB) {
 	if err := db.AutoMigrate(postModel.Post{}); err != nil {
 		log.Fatal(err)
@@ -40,4 +41,10 @@ func GormMigrartion(db *gorm.DB) {
 		return
 	}
 	db.AutoMigrate(userModel.User{})
+=======
+
+func Migrate(db *gorm.DB){
+	// db.Exec("DROP TABLE users")
+	db.AutoMigrate(repository.User{})
+>>>>>>> b870c4b (feat: tambah fitur update user untuk upload avatar)
 }

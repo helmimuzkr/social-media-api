@@ -1,8 +1,17 @@
 package handler
 
 import (
+	"mime/multipart"
 	"social-media-app/features/user"
 )
+
+type File struct {
+	File multipart.File `json:"file,omitempty" validate:"required"`
+}
+
+type Url struct {
+	Url string `json:"url,omitempty" validate:"required"`
+}
 
 type LoginReq struct {
 	Email    string `json:"email" form:"email"`
@@ -10,10 +19,10 @@ type LoginReq struct {
 }
 
 type RegisterReq struct {
-	FirstName string `json:"firstname" form:"firstname"`
-	LastName  string `json:"lastname" form:"lastname"`
-	Email     string `json:"email" form:"email"`
-	Password  string `json:"password" form:"password"`
+	FirstName string `json:"firstname" form:"firstname" validate:"required"`
+	LastName  string `json:"lastname" form:"lastname" validate:"required"`
+	Email     string `json:"email" form:"email" validate:"required, email"`
+	Password  string `json:"password" form:"password" validate:"required"`
 }
 
 type UpdateReq struct {
@@ -50,4 +59,9 @@ func ToCore(data interface{}) *user.Core {
 		return nil
 	}
 	return &res
+}
+
+func ToCoreFile(data interface{}) *user.FileCore {
+	cnv := data.(File)
+	return &user.FileCore{File: cnv.File}
 }

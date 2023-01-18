@@ -10,10 +10,10 @@ import (
 	"social-media-app/features/user"
 	"social-media-app/helper"
 
-
 	"strings"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -143,3 +143,21 @@ func (us *userService) RemoveServ(token interface{}) error {
 	return nil
 }
 
+var (
+	validate = validator.New()
+)
+
+func (us *userService) FileUpload(file user.FileCore) (string, error) {
+	//validate
+	err := validate.Struct(file)
+	if err != nil {
+		return "", err
+	}
+
+	//upload
+	uploadUrl, err := helper.ImageUploadHelper(file.File)
+	if err != nil {
+		return "", err
+	}
+	return uploadUrl, nil
+}
