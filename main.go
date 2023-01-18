@@ -28,8 +28,11 @@ func main() {
 
 	e.POST("/posts", postHandler.Create())
 	e.GET("/posts", postHandler.MyPost())
-	e.DELETE("/posts", postHandler.Delete())
-	e.PUT("/posts/:id", postHandler.Delete())
+	e.PUT("/posts/:post_id", postHandler.Update())
+	e.DELETE("/posts/:post_id", postHandler.Delete())
+	e.GET("/posts/:post_id", postHandler.GetByID())
+	e.GET("/posts/list/:user_id", postHandler.GetByUserID())
+	e.GET("/posts/list", postHandler.GetAll())
 
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)
