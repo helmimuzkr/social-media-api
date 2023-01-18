@@ -6,10 +6,13 @@ package services
 import (
 	"errors"
 	"log"
+	"social-media-app/config"
 	"social-media-app/features/user"
 
 	"strings"
+	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -44,9 +47,32 @@ func (us *userService) RegisterServ(newUser user.Core) (user.Core, error) {
 	return res, nil
 }
 
-// func (us *userService) LoginServ(email, password string) (string, user.Core, error) {
-	
-// }
+func (us *userService) LoginServ(email, password string) (string, user.Core, error) {
+	res, err := us.qry.LoginRepo(email)
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "data tidak ditemukan"
+		} else {
+			msg = "terdapat masalah pada server"
+		}
+		return "", user.Core{}, errors.New(msg)
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(password)); err != nil { // res.Password = password di database, password = password input
+		log.Println("login compare", err.Error())
+		return "", user.Core{}, errors.New("password tidak sesuai")
+	}
+
+	claims := jwt.MapClaims{}
+	claims["authorized"] = true
+	claims["userID"] = res.ID
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix() //Token expires after 1 hour
+	hashToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, _ := hashToken.SignedString([]byte(config.JWT_KEY))
+
+	return token, res, nil
+}
 
 // func (us *userService) ProfileServ(token interface{}) (user.Core, error) {
 	

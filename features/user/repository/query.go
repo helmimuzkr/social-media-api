@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"log"
 	"social-media-app/features/user"
 
@@ -29,8 +30,12 @@ func (uq *userQuery) RegisterRepo(newUser user.Core) (user.Core, error) {
 }
 
 func (uq *userQuery) LoginRepo(email string) (user.Core, error) {
-	
-	return user.Core{}, nil
+	res := User{}
+	if err := uq.db.Where("email = ?", email).First(&res).Error; err != nil {
+		log.Println("Login query error,", err.Error())
+		return user.Core{}, errors.New("incorrect email")
+	}
+	return UserToCore(res), nil
 }
 
 func (uq *userQuery) ProfileRepo(id uint) (user.Core, error) {

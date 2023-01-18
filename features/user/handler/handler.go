@@ -33,11 +33,21 @@ func (uc *userControll) RegisterHand() echo.HandlerFunc {
 	}
 }
 
-// func (uc *userControll) LoginHand() echo.HandlerFunc {
-// 	return func(c echo.Context) error {
+func (uc *userControll) LoginHand() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		input := LoginReq{}
+		if err := c.Bind(&input); err != nil {
+			// log.Println("Bind error", err.Error())
+			return c.JSON(http.StatusBadRequest, "Invalid input format") //http.StatusBadRequest bisa diganti dengan 400
+		}
 
-// 	}
-// }
+		token, res, err := uc.srv.LoginServ(input.Email, input.Password)
+		if err != nil {
+			return c.JSON(ErrorResponse(err.Error()))
+		}
+		return c.JSON(SuccessResponse(http.StatusOK, "login success", res, token))
+	}
+}
 
 // func (uc *userControll) ProfileHand() echo.HandlerFunc {
 // 	return func(c echo.Context) error {
