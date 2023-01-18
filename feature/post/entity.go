@@ -10,6 +10,7 @@ type Core struct {
 	ID        uint
 	Caption   string `validate:"required"`
 	Image     string `validate:"omitempty,url"`
+	PublicID  string
 	Author    string
 	Avatar    string
 	CreatedAt string
@@ -27,21 +28,21 @@ type PostHandler interface {
 }
 
 type PostService interface {
-	Create(token interface{}, newPost Core, file *multipart.FileHeader) error
+	Create(token interface{}, newPost Core, fileHeader *multipart.FileHeader) error
 	MyPost(token interface{}) ([]Core, error)
-	Update(token interface{}, updatePost Core, file *multipart.FileHeader) error
+	Update(token interface{}, postID uint, updatePost Core, fileHeader *multipart.FileHeader) error
 	Delete(token interface{}, postID uint) error
 	GetByUserID(userID uint) ([]Core, error)
-	GetByID(postID uint) ([]Core, error)
+	GetByID(postID uint) (Core, error)
 	GetAll() ([]Core, error)
 }
 
 type PostRepository interface {
 	Create(userID uint, newPost Core) error
-	MyPost(userID uint) ([]Core, error)
+	MyPost(postID uint) ([]Core, error)
 	Update(userID uint, postID uint, updatePost Core) error
 	Delete(userID uint, postID uint) error
 	GetByUserID(userID uint) ([]Core, error)
-	GetByID(postID uint) ([]Core, error)
+	GetByID(postID uint) (Core, error)
 	GetAll() ([]Core, error)
 }
