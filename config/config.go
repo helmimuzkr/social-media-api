@@ -9,14 +9,11 @@ import (
 
 var (
 	JWT_KEY string
-<<<<<<< HEAD
 
 	CloudinaryName         string
 	CloudinaryApiKey       string
 	CloudinaryApiScret     string
 	CloudinaryUploadFolder string
-=======
->>>>>>> ce27822 (feat: perbaikan salah variabel)
 )
 
 type AppConfig struct {

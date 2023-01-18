@@ -5,6 +5,7 @@ import (
 	"log"
 	commentModel "social-media-app/feature/comment/repository"
 	postModel "social-media-app/feature/post/repository"
+	userModel "social-media-app/feature/user/repository"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,12 +21,12 @@ func OpenDB(cfg *AppConfig) *gorm.DB {
 		cfg.DBPort,
 		cfg.DBName,
 	)
+
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Println("Open connection gorm failed", err)
+		log.Println("database connection error", err.Error())
 		return nil
 	}
-
 	return db
 }
 
@@ -38,4 +39,5 @@ func GormMigrartion(db *gorm.DB) {
 		log.Fatal(err)
 		return
 	}
+	db.AutoMigrate(userModel.User{})
 }
