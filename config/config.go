@@ -9,11 +9,14 @@ import (
 
 var (
 	JWT_KEY string
+<<<<<<< HEAD
 
 	CloudinaryName         string
 	CloudinaryApiKey       string
 	CloudinaryApiScret     string
 	CloudinaryUploadFolder string
+=======
+>>>>>>> ce27822 (feat: perbaikan salah variabel)
 )
 
 type AppConfig struct {
@@ -33,10 +36,10 @@ func GetConfig() *AppConfig {
 	}
 
 	appConfig.DBUser = os.Getenv("DB_USER")
+	appConfig.DBName = os.Getenv("DB_NAME")
 	appConfig.DBPass = os.Getenv("DB_PASS")
 	appConfig.DBHost = os.Getenv("DB_HOST")
 	appConfig.DBPort = os.Getenv("DB_PORT")
-	appConfig.DBName = os.Getenv("DB_NAME")
 
 	JWT_KEY = os.Getenv("JWT_KEY")
 
