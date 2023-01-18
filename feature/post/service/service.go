@@ -23,30 +23,28 @@ func NewPostService(r post.PostRepository, v *validator.Validate) post.PostServi
 }
 
 func (ps *postService) Create(token interface{}, newPost post.Core, fileHeader *multipart.FileHeader) error {
-	userID := helper.ExtractToken(token)
-	if userID < 0 {
-		return errors.New("token invalid")
-	}
+	// userID := helper.ExtractToken(token)
+	// if userID < 0 {
+	// 	return errors.New("token invalid")
+	// }
 
 	if fileHeader != nil {
 		file, _ := fileHeader.Open()
 		uploadURL, err := helper.Upload(file, "/post")
 		if err != nil {
 			log.Println(err)
-			return errors.New("failed upload image")
+			return errors.New("failed to upload image")
 		}
 		newPost.Image = uploadURL
 	}
 
-	err := ps.validate.Struct(newPost)
-	if err != nil {
+	if err := ps.validate.Struct(newPost); err != nil {
 		log.Println(err)
 		helper.ValidationErrorHandle(err)
 		return err
 	}
 
-	err = ps.repo.Create(1, newPost)
-	if err != nil {
+	if err := ps.repo.Create(1, newPost); err != nil {
 		log.Println(err)
 		return errors.New("internal server error")
 	}
@@ -55,6 +53,11 @@ func (ps *postService) Create(token interface{}, newPost post.Core, fileHeader *
 }
 
 func (ps *postService) MyPost(token interface{}) ([]post.Core, error) {
+	// userID := helper.ExtractToken(token)
+	// if userID < 0 {
+	// 	return errors.New("token invalid")
+	// }
+
 	return nil, nil
 }
 

@@ -27,6 +27,9 @@ func main() {
 	e := echo.New()
 
 	e.POST("/posts", postHandler.Create())
+	e.GET("/posts", postHandler.MyPost())
+	e.DELETE("/posts", postHandler.Delete())
+	e.PUT("/posts/:id", postHandler.Delete())
 
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)
