@@ -30,7 +30,6 @@ type UpdateReq struct {
 	FirstName string `json:"firstname" form:"firstname"`
 	LastName  string `json:"lastname" form:"lastname"`
 	Email     string `json:"email" form:"email"`
-	Password  string `json:"password" form:"password"`
 }
 
 type UpdatePass struct {
@@ -62,8 +61,11 @@ func ToCore(data interface{}) *user.Core {
 		res.FirstName = cnv.FirstName
 		res.LastName = cnv.LastName
 		res.Email = cnv.Email
-		res.Password = cnv.Password
 		res.Avatar = cnv.Avatar
+	case UpdatePass:
+		cnv := data.(UpdatePass)
+		// res.Password = cnv.OldPassword
+		res.Password = cnv.NewPassword
 	default:
 		return nil
 	}

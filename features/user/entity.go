@@ -10,8 +10,8 @@ type Core struct {
 	ID        uint
 	FirstName string `validate:"required"`
 	LastName  string `validate:"required"`
-	Email     string `validate:"required"`
-	Password  string `validate:"required"`
+	Email     string `validate:"required, email"`
+	Password  string `validate:"required, min=3"`
 	Avatar    string
 }
 
@@ -36,10 +36,10 @@ type UserService interface {
 	SearchServ(name string) ([]Core, error)
 	GetByIdServ(id uint) (Core, error)
 	ProfileServ(token interface{}) (Core, error)
-	UpdateServ(token interface{}, updateUser Core) (Core, error)
-	UpdatePassServ(token interface{}, oldPass Core, newPass string) (Core, error)
-	RemoveServ(token interface{}) error
 	FileUpload(file FileCore) (string, error)
+	UpdateServ(token interface{}, updateUser Core) (Core, error)
+	UpdatePassServ(token interface{}, oldPass string, newPass Core) (Core, error)
+	RemoveServ(token interface{}) error
 }
 
 type UserRepository interface {
@@ -49,7 +49,7 @@ type UserRepository interface {
 	GetByIdRepo(id uint) (Core, error)
 	ProfileRepo(id uint) (Core, error)
 	UpdateRepo(id uint, updateUser Core) (Core, error)
-	UpdatePassRepo(id uint, updatePass Core) (Core, error)
-	RemoveRepo(id uint) error
 	CheckPass(id uint) (Core, error)
+	UpdatePassRepo(id uint, newPass Core) (Core, error)
+	RemoveRepo(id uint) error
 }

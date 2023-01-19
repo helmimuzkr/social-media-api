@@ -130,16 +130,17 @@ func (uq *userQuery) RemoveRepo(id uint) error {
 
 func (uq *userQuery) CheckPass(id uint) (user.Core, error) {
 	res := User{}
-	if err := uq.db.Where("id = ?", id).First(&res).Error; err != nil {
-		log.Println("Login query error,", err.Error())
-		return user.Core{}, errors.New("incorrect id")
+	if err := uq.db.Raw("SELECT password FROM users WHERE id = ?", id).First(&res).Error; err != nil {
+		log.Println("Check password query error,", err.Error())
+		return user.Core{}, errors.New("user tidak ditemukan")
 	}
+	log.Println("Query", res.Password)
 	return UserToCore(res), nil
 }
 
-func (uq *userQuery) UpdatePassRepo(id uint, updateUser user.Core) (user.Core, error) {
+func (uq *userQuery) UpdatePassRepo(id uint, UpdatePass user.Core) (user.Core, error) {
 	log.Println(id)
-	cnv := CoreToUser(updateUser)
+	cnv := CoreToUser(UpdatePass)
 	qry := uq.db.Model(&User{}).Where("id = ?", id).Updates(&cnv)
 
 	if qry.RowsAffected <= 0 {

@@ -143,15 +143,6 @@ func (us *userService) SearchServ(name string) ([]user.Core, error) {
 }
 
 func (us *userService) UpdateServ(token interface{}, updateUser user.Core) (user.Core, error) {
-	if updateUser.Password != "" {
-		hashed, err := bcrypt.GenerateFromPassword([]byte(updateUser.Password), bcrypt.DefaultCost)
-		if err != nil {
-			log.Println("bcrypt error ", err.Error())
-			return user.Core{}, errors.New("password process error")
-		}
-		updateUser.Password = string(hashed)
-	}
-
 	id := uint(helper.ExtractToken(token))
 	if id <= 0 {
 		return user.Core{}, errors.New("data tidak ditemukan")
@@ -208,28 +199,29 @@ func (us *userService) FileUpload(file user.FileCore) (string, error) {
 	return uploadUrl, nil
 }
 
-func (us *userService) UpdatePassServ(token interface{}, updatePass user.Core, newPass string) (user.Core, error) {
+func (us *userService) UpdatePassServ(token interface{}, oldPass string, newPass user.Core) (user.Core, error) {
 	id := uint(helper.ExtractToken(token))
 	if id <= 0 {
 		return user.Core{}, errors.New("data tidak ditemukan")
 	}
 
+	log.Println(oldPass)
+	log.Println(newPass.Password)
+
 	res, err := us.qry.CheckPass(id)
-	if err := bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(updatePass.Password)); err != nil { // res.Password = password di database, password = password input
-		log.Println("login compare", err.Error())
+	if err := bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(oldPass)); err != nil {
+		log.Println("update compare", err.Error())
 		return user.Core{}, errors.New("password tidak sesuai")
 	}
 
-	if newPass != "" {
-		hashed, err := bcrypt.GenerateFromPassword([]byte(newPass), bcrypt.DefaultCost)
-		if err != nil {
-			log.Println("bcrypt error ", err.Error())
-			return user.Core{}, errors.New("password process error")
-		}
-		updatePass.Password = string(hashed)
+	hashed, err := bcrypt.GenerateFromPassword([]byte(newPass.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Println("bcrypt error ", err.Error())
+		return user.Core{}, errors.New("password process error")
 	}
+	newPass.Password = string(hashed)
 
-	res, err = us.qry.UpdatePassRepo(id, updatePass)
+	res, err = us.qry.UpdatePassRepo(id, newPass)
 	if err != nil {
 		msg := ""
 		if strings.Contains(err.Error(), "duplicated") { // Kalau error mengandung kata "duplicated"

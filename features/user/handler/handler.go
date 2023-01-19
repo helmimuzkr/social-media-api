@@ -137,12 +137,12 @@ func (uc *userControll) RemoveHand() echo.HandlerFunc {
 func (uc *userControll) UpdatePassHand() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token := c.Get("user")
-		input := UpdateReq{}
+		input := UpdatePass{}
 		if err := c.Bind(&input); err != nil {
 			// log.Println("Bind error", err.Error())
 			return c.JSON(http.StatusBadRequest, "Invalid input format")
 		}
-		res, err := uc.srv.UpdateServ(token, *ToCore(input))
+		res, err := uc.srv.UpdatePassServ(token, input.OldPassword, *ToCore(input))
 		if err != nil {
 			return c.JSON(ErrorResponse(err.Error()))
 		}
