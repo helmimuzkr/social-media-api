@@ -46,12 +46,3 @@ func ValidateToken(strToken string) *jwt.Token {
 
 	return token
 }
-
-func ValidateToken(strToken string) *jwt.Token {
-	// Decode rawToken, parse from rawToken to jwt.Token
-	token, _ := jwt.Parse(strToken, func(t *jwt.Token) (interface{}, error) {
-		return []byte(config.JWT_KEY), nil
-	})
-
-	return token
-}
