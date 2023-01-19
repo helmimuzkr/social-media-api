@@ -24,12 +24,12 @@ func (ch *commentHandler) Add() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token := c.Get("user")
 
-		idStr := c.FormValue("post_id")
-		postID, _ := strconv.Atoi(idStr)
+		commentReq := commentRequest{}
+		if err := c.Bind(&commentReq); err != nil {
+			return c.JSON(helper.ErrorResponse(err.Error()))
+		}
 
-		comment := c.FormValue("comment")
-
-		if err := ch.srv.Add(token, uint(postID), comment); err != nil {
+		if err := ch.srv.Add(token, commentReq.PostID, commentReq.Comment); err != nil {
 			return c.JSON(helper.ErrorResponse(err.Error()))
 		}
 
@@ -48,7 +48,7 @@ func (ch *commentHandler) GetAll() echo.HandlerFunc {
 		}
 
 		response := ListCommentResponse{}
-		copier.Copy(response, res)
+		copier.Copy(&response, &res)
 
 		return c.JSON(helper.SuccessResponse(http.StatusOK, "success get all comments", response))
 	}
