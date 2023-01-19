@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	commentModel "social-media-app/feature/comment/repository"
 	postModel "social-media-app/feature/post/repository"
 
 	"gorm.io/driver/mysql"
@@ -31,5 +32,10 @@ func OpenDB(cfg *AppConfig) *gorm.DB {
 func GormMigrartion(db *gorm.DB) {
 	if err := db.AutoMigrate(postModel.Post{}); err != nil {
 		log.Fatal(err)
+		return
+	}
+	if err := db.AutoMigrate(commentModel.Comment{}); err != nil {
+		log.Fatal(err)
+		return
 	}
 }
