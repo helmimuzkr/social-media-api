@@ -39,7 +39,7 @@ func (cs *commentService) Add(token interface{}, postID uint, newComment string)
 		if strings.Contains(err.Error(), "not found") {
 			msg = "post not found"
 		} else {
-			msg = "internal server error, failed add comment"
+			msg = "internal server error"
 		}
 		return errors.New(msg)
 	}
@@ -48,6 +48,10 @@ func (cs *commentService) Add(token interface{}, postID uint, newComment string)
 }
 
 func (cs *commentService) GetAll(postID uint) ([]comment.Core, error) {
+	if postID < 1 {
+		return nil, errors.New("post not found")
+	}
+
 	res, err := cs.repo.GetAll(postID)
 	if err != nil {
 		msg := ""
