@@ -8,7 +8,7 @@ import (
 	"social-media-app/helper"
 	"strings"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type postService struct {
@@ -24,11 +24,10 @@ func NewPostService(r post.PostRepository, v *validator.Validate) post.PostServi
 }
 
 func (ps *postService) Create(token interface{}, newPost post.Core, fileHeader *multipart.FileHeader) error {
-	// userID := helper.ExtractToken(token)
-	// if userID < 0 {
-	// 	return errors.New("token invalid")
-	// }
-	userID := 1
+	userID := helper.ExtractToken(token)
+	if userID < 0 {
+		return errors.New("token invalid")
+	}
 
 	if fileHeader != nil {
 		file, _ := fileHeader.Open()
@@ -56,11 +55,10 @@ func (ps *postService) Create(token interface{}, newPost post.Core, fileHeader *
 }
 
 func (ps *postService) MyPost(token interface{}) ([]post.Core, error) {
-	// userID := helper.ExtractToken(token)
-	// if userID < 0 {
-	// 	return errors.New("token invalid")
-	// }
-	userID := 1
+	userID := helper.ExtractToken(token)
+	if userID < 0 {
+		return nil, errors.New("token invalid")
+	}
 
 	res, err := ps.repo.MyPost(uint(userID))
 	if err != nil {
@@ -82,11 +80,10 @@ func (ps *postService) MyPost(token interface{}) ([]post.Core, error) {
 }
 
 func (ps *postService) Update(token interface{}, postID uint, updatePost post.Core, fileHeader *multipart.FileHeader) error {
-	// userID := helper.ExtractToken(token)
-	// if userID < 0 {
-	// 	return errors.New("token invalid")
-	// }
-	userID := 1
+	userID := helper.ExtractToken(token)
+	if userID < 0 {
+		return errors.New("token invalid")
+	}
 
 	if fileHeader != nil {
 		file, _ := fileHeader.Open()
@@ -131,11 +128,10 @@ func (ps *postService) Update(token interface{}, postID uint, updatePost post.Co
 }
 
 func (ps *postService) Delete(token interface{}, postID uint) error {
-	// userID := helper.ExtractToken(token)
-	// if userID < 0 {
-	// 	return errors.New("token invalid")
-	// }
-	userID := 1
+	userID := helper.ExtractToken(token)
+	if userID < 0 {
+		return errors.New("token invalid")
+	}
 
 	res, err := ps.repo.GetByID(postID)
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/jinzhu/copier"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type postHandler struct {
