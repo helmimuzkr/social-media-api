@@ -131,7 +131,7 @@ func TestGetAll(t *testing.T) {
 		actual, err := srv.GetAll(uint(1))
 
 		assert.NotNil(t, err)
-		assert.EqualError(t, err, "internal server error")
+		assert.EqualError(t, err, "internal server error, failed get all comment")
 		assert.Nil(t, actual)
 		repo.AssertExpectations(t)
 	})

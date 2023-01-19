@@ -43,7 +43,7 @@ func (pr *postRepository) Update(userID uint, postID uint, updatePost post.Core)
 	model.ID = postID
 	model.UserID = userID
 
-	tx := pr.db.Model(&Post{}).Where("id = ? AND user_id = ?", model.ID, model.UserID).Updates(&model)
+	tx := pr.db.Model(&Post{}).Where("id = ? AND user_id = ? AND deleted_at IS NULL", model.ID, model.UserID).Updates(&model)
 	if tx.Error != nil {
 		return tx.Error
 	}
@@ -56,10 +56,14 @@ func (pr *postRepository) Update(userID uint, postID uint, updatePost post.Core)
 }
 
 func (pr *postRepository) Delete(userID uint, postID uint) error {
-	tx := pr.db.Unscoped().Where("id = ? AND user_id = ?", postID, userID).Delete(&Post{})
+	tx := pr.db.Where("id = ? AND user_id = ?", postID, userID).Delete(&Post{})
 	if tx.Error != nil {
 		return tx.Error
 	}
+	// tx := pr.db.Unscoped().Where("id = ? AND user_id = ?", postID, userID).Delete(&Post{})
+	// if tx.Error != nil {
+	// 	return tx.Error
+	// }
 
 	if tx.RowsAffected < 1 {
 		return errors.New("no row deleted")

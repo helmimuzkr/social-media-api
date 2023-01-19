@@ -1,6 +1,8 @@
 package repository
 
 import (
+	comment "social-media-app/feature/comment/repository"
+	post "social-media-app/feature/post/repository"
 	"social-media-app/feature/user"
 
 	"gorm.io/gorm"
@@ -13,6 +15,8 @@ type User struct {
 	Email     string `gorm:"not_null;unique"`
 	Password  string `gorm:"not_null"`
 	Avatar    string
+	Posts     []post.Post       `gorm:"foreignKey:UserID"`
+	Comments  []comment.Comment `gorm:"foreignKey:UserID"`
 }
 
 // Input API dalam bentuk User (isi database), output API dalam bentuk Core (JSON)

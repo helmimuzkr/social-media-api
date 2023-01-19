@@ -39,5 +39,9 @@ func GormMigration(db *gorm.DB) {
 		log.Fatal(err)
 		return
 	}
-	db.AutoMigrate(userModel.User{})
+	if err := db.AutoMigrate(userModel.User{}); err != nil {
+		log.Fatal(err)
+		return
+	}
+
 }

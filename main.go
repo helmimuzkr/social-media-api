@@ -35,15 +35,12 @@ func main() {
 	commentRepo := _commentRepository.NewCommentRepository(db)
 	commentSrv := _commentService.NewCommentService(commentRepo, v)
 	commentHandler := _commentHandler.NewCommentHandler(commentSrv)
-
-	e := echo.New()
-
-	// User
 	userRepo := userRepository.New(db)
 	userSrv := userService.New(userRepo, v)
 	userHandler := userHandler.New(&userSrv)
 
-	// Setup Middleware
+	e := echo.New()
+
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
@@ -62,13 +59,11 @@ func main() {
 	e.POST("/comments", commentHandler.Add(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.GET("/comments", commentHandler.GetAll())
 
-	// Setup Route
 	e.POST("/register", userHandler.RegisterHand())
 	e.POST("/login", userHandler.LoginHand())
 
 	userLogin := e.Group("/users")
 	userLogin.Use(middleware.JWT([]byte(config.JWT_KEY)))
-
 	e.GET("/search", userHandler.SearchHand(), middleware.JWT([]byte(config.JWT_KEY)))
 	userLogin.GET("/:id", userHandler.GetByIdHand())
 	userLogin.GET("", userHandler.ProfileHand())

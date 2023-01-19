@@ -85,7 +85,16 @@ func (ps *postService) Update(token interface{}, postID uint, updatePost post.Co
 		return errors.New("token invalid")
 	}
 
+	// Pengecekan, jika ada file yang diupload atau tidak
 	if fileHeader != nil {
+		// Mencari post, jika tidak ada maka akan langsung mereturn not found
+		res, err := ps.repo.GetByID(postID)
+		if err != nil {
+			log.Println(err)
+			return errors.New("post not found")
+		}
+
+		// Upload image ke cloud
 		file, _ := fileHeader.Open()
 		uploadURL, err := helper.UploadFile(file, "/post")
 		if err != nil {
@@ -95,18 +104,14 @@ func (ps *postService) Update(token interface{}, postID uint, updatePost post.Co
 		updatePost.Image = uploadURL.SecureURL
 		updatePost.PublicID = uploadURL.PublicID
 
+		// Melakukan validasi ulang
 		if err := ps.validate.Struct(updatePost); err != nil {
 			log.Println(err)
 			helper.ValidationErrorHandle(err)
 			return err
 		}
 
-		res, err := ps.repo.GetByID(postID)
-		if err != nil {
-			log.Println(err)
-			return errors.New("failed to update image")
-		}
-
+		// Hapus image sebelumnya di cloudinary
 		if err := helper.DestroyFile(res.PublicID); err != nil {
 			log.Println(err)
 			return errors.New("failed to upload image")
