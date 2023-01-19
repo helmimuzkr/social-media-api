@@ -7,6 +7,10 @@ import (
 	postRepository "social-media-app/feature/post/repository"
 	postService "social-media-app/feature/post/service"
 
+	_commentHandler "social-media-app/feature/comment/handler"
+	_commentRepository "social-media-app/feature/comment/repository"
+	_commentService "social-media-app/feature/comment/service"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -20,10 +24,12 @@ func main() {
 	v := validator.New()
 
 	// Setup feature
-	// Post
 	postRepo := postRepository.NewPostRepository(db)
 	postSrv := postService.NewPostService(postRepo, v)
 	postHandler := postHandler.NewPostHandler(postSrv)
+	commentRepo := _commentRepository.NewCommentRepository(db)
+	commentSrv := _commentService.NewCommentService(commentRepo, v)
+	commentHandler := _commentHandler.NewCommentHandler(commentSrv)
 
 	e := echo.New()
 
@@ -41,6 +47,9 @@ func main() {
 	e.GET("/posts/:post_id", postHandler.GetByID())
 	e.GET("/posts/list/:user_id", postHandler.GetByUserID())
 	e.GET("/posts/list", postHandler.GetAll())
+
+	e.POST("/comments", commentHandler.Add(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/comments", commentHandler.GetAll())
 
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)
