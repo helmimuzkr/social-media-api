@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"social-media-app/config"
 	postHandler "social-media-app/feature/post/handler"
@@ -17,7 +16,7 @@ import (
 	userService "social-media-app/feature/user/service"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/golang-jwt/jwt"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
