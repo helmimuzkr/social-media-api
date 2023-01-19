@@ -360,7 +360,7 @@ paths:
                     $ref: "#/components/responses/error_not_found_response"
                 500:
                     $ref: "#/components/responses/error_internal_response"
-    /posts/{user_id}:
+    /posts/list/{user_id}:
         get:
             tags:
                 - "Post"
