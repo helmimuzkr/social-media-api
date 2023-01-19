@@ -29,7 +29,7 @@ func GetConfig() *AppConfig {
 
 	if err := godotenv.Load("app.env"); err != nil {
 		log.Println("Load env failed", err)
-		return &AppConfig{}
+		return nil
 	}
 
 	appConfig.DBUser = os.Getenv("DB_USER")
