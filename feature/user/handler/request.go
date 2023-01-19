@@ -2,7 +2,7 @@ package handler
 
 import (
 	"mime/multipart"
-	"social-media-app/features/user"
+	"social-media-app/feature/user"
 )
 
 type File struct {
@@ -70,9 +70,4 @@ func ToCore(data interface{}) *user.Core {
 		return nil
 	}
 	return &res
-}
-
-func ToCoreFile(data interface{}) *user.FileCore {
-	cnv := data.(File)
-	return &user.FileCore{File: cnv.File}
 }

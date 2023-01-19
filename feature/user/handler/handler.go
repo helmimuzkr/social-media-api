@@ -4,7 +4,7 @@ package handler
 
 import (
 	"log"
-	"social-media-app/features/user"
+	"social-media-app/feature/user"
 	"strconv"
 
 	"net/http"
@@ -94,28 +94,20 @@ func (uc *userControll) GetByIdHand() echo.HandlerFunc {
 
 func (uc *userControll) UpdateHand() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var er error
 		token := c.Get("user")
 		input := UpdateReq{}
 		if err := c.Bind(&input); err != nil {
 			// log.Println("Bind error", err.Error())
 			return c.JSON(http.StatusBadRequest, "Invalid input format")
 		}
-		var formfile user.FileCore
-	
-		formfile.File, _, er = c.Request().FormFile("photo")
-		if er != nil {
+
+		file, err := c.FormFile("photo")
+		if err != nil {
 			// log.Println("Bind error", err.Error())
 			return c.JSON(http.StatusBadRequest, "Insert photo")
 		}
-		uploadUrl, err := uc.srv.FileUpload(formfile)
-		if err != nil {
-			// log.Println("Bind error", err.Error())
-			return c.JSON(http.StatusInternalServerError, "Error on upload foto")
-		}
 
-		input.Avatar = uploadUrl
-		res, err := uc.srv.UpdateServ(token, *ToCore(input))
+		res, err := uc.srv.UpdateServ(token, *ToCore(input), file)
 		if err != nil {
 			return c.JSON(ErrorResponse(err.Error()))
 		}

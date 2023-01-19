@@ -30,8 +30,7 @@ func OpenDB(cfg *AppConfig) *gorm.DB {
 	return db
 }
 
-<<<<<<< HEAD
-func GormMigrartion(db *gorm.DB) {
+func GormMigration(db *gorm.DB) {
 	if err := db.AutoMigrate(postModel.Post{}); err != nil {
 		log.Fatal(err)
 		return
@@ -41,10 +40,4 @@ func GormMigrartion(db *gorm.DB) {
 		return
 	}
 	db.AutoMigrate(userModel.User{})
-=======
-
-func Migrate(db *gorm.DB){
-	// db.Exec("DROP TABLE users")
-	db.AutoMigrate(repository.User{})
->>>>>>> b870c4b (feat: tambah fitur update user untuk upload avatar)
 }

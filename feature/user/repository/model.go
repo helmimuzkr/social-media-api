@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"social-media-app/features/user"
+	"social-media-app/feature/user"
 
 	"gorm.io/gorm"
 )

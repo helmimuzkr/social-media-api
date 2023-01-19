@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"social-media-app/config"
 	postHandler "social-media-app/feature/post/handler"
@@ -11,12 +12,12 @@ import (
 	_commentRepository "social-media-app/feature/comment/repository"
 	_commentService "social-media-app/feature/comment/service"
 
-	"github.com/go-playground/validator/v10"
-	"social-media-app/features/user/handler"
-	"social-media-app/features/user/repository"
-	"social-media-app/features/user/services"
+	userHandler "social-media-app/feature/user/handler"
+	userRepository "social-media-app/feature/user/repository"
+	userService "social-media-app/feature/user/service"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -24,7 +25,7 @@ import (
 func main() {
 	c := config.GetConfig()
 	db := config.OpenDB(c)
-	config.GormMigrartion(db)
+	config.GormMigration(db)
 
 	v := validator.New()
 
@@ -38,6 +39,12 @@ func main() {
 
 	e := echo.New()
 
+	// User
+	userRepo := userRepository.New(db)
+	userSrv := userService.New(userRepo, v)
+	userHandler := userHandler.New(&userSrv)
+
+	// Setup Middleware
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
@@ -56,24 +63,19 @@ func main() {
 	e.POST("/comments", commentHandler.Add(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.GET("/comments", commentHandler.GetAll())
 
+	// Setup Route
+	e.POST("/register", userHandler.RegisterHand())
+	e.POST("/login", userHandler.LoginHand())
 
-	userRepo := repository.New(db)
-	userSrv := services.New(userRepo, v)
-	userHdl := handler.New(&userSrv)
-	
-	e.POST("/register", userHdl.RegisterHand())
-	e.POST("/login", userHdl.LoginHand())
-
-	
 	userLogin := e.Group("/users")
 	userLogin.Use(middleware.JWT([]byte(config.JWT_KEY)))
-	
-	e.GET("/search", userHdl.SearchHand(), middleware.JWT([]byte(config.JWT_KEY)))
-	userLogin.GET("/:id", userHdl.GetByIdHand())
-	userLogin.GET("", userHdl.ProfileHand())
-	userLogin.PUT("", userHdl.UpdateHand())
-	userLogin.PUT("/password", userHdl.UpdatePassHand())
-	userLogin.DELETE("", userHdl.RemoveHand())
+
+	e.GET("/search", userHandler.SearchHand(), middleware.JWT([]byte(config.JWT_KEY)))
+	userLogin.GET("/:id", userHandler.GetByIdHand())
+	userLogin.GET("", userHandler.ProfileHand())
+	userLogin.PUT("", userHandler.UpdateHand())
+	userLogin.PUT("/password", userHandler.UpdatePassHand())
+	userLogin.DELETE("", userHandler.RemoveHand())
 
 	if err := e.Start(":8000"); err != nil {
 		log.Fatal(err)

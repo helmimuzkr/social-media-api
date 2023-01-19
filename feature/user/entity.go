@@ -10,13 +10,9 @@ type Core struct {
 	ID        uint
 	FirstName string `validate:"required"`
 	LastName  string `validate:"required"`
-	Email     string `validate:"required, email"`
-	Password  string `validate:"required, min=3"`
+	Email     string `validate:"required,email"`
+	Password  string `validate:"required,min=3"`
 	Avatar    string
-}
-
-type FileCore struct {
-	File multipart.File `json:"file,omitempty" validate:"required"`
 }
 
 type UserHandler interface {
@@ -36,8 +32,7 @@ type UserService interface {
 	SearchServ(name string) ([]Core, error)
 	GetByIdServ(id uint) (Core, error)
 	ProfileServ(token interface{}) (Core, error)
-	FileUpload(file FileCore) (string, error)
-	UpdateServ(token interface{}, updateUser Core) (Core, error)
+	UpdateServ(token interface{}, updateUser Core, file *multipart.FileHeader) (Core, error)
 	UpdatePassServ(token interface{}, oldPass string, newPass Core) (Core, error)
 	RemoveServ(token interface{}) error
 }

@@ -3,7 +3,7 @@ package repository
 import (
 	"errors"
 	"log"
-	"social-media-app/features/user"
+	"social-media-app/feature/user"
 
 	"gorm.io/gorm"
 )

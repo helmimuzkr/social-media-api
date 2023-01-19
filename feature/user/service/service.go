@@ -1,20 +1,21 @@
 // Tempat menentukan error
 // Meng-convert pesan error yang sistematis menjadi manusiawi
 
-package services
+package service
 
 import (
 	"errors"
 	"log"
+	"mime/multipart"
 	"social-media-app/config"
-	"social-media-app/features/user"
+	"social-media-app/feature/user"
 	"social-media-app/helper"
 
 	"strings"
 	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,17 +42,7 @@ func (us *userService) RegisterServ(newUser user.Core) (user.Core, error) {
 	err = us.vld.Struct(newUser)
 	if err != nil {
 		log.Println(err)
-		if strings.Contains(err.Error(), "Email") {
-			return user.Core{}, errors.New("format email salah")
-		} else if strings.Contains(err.Error(), "FirstName") {
-			return user.Core{}, errors.New("format firstname salah")
-		} else if strings.Contains(err.Error(), "LastName") {
-			return user.Core{}, errors.New("format lastname salah")
-		} else if strings.Contains(err.Error(), "Password") {
-			return user.Core{}, errors.New("format password salah")
-		} else {
-			return user.Core{}, errors.New("format inputan salah")
-		}
+		helper.ValidationErrorHandle(err)
 	}
 
 	res, err := us.qry.RegisterRepo(newUser)
@@ -142,10 +133,20 @@ func (us *userService) SearchServ(name string) ([]user.Core, error) {
 	return res, nil
 }
 
-func (us *userService) UpdateServ(token interface{}, updateUser user.Core) (user.Core, error) {
+func (us *userService) UpdateServ(token interface{}, updateUser user.Core, fileHeader *multipart.FileHeader) (user.Core, error) {
 	id := uint(helper.ExtractToken(token))
 	if id <= 0 {
 		return user.Core{}, errors.New("data tidak ditemukan")
+	}
+
+	if fileHeader != nil {
+		file, _ := fileHeader.Open()
+		uploadURL, err := helper.UploadFile(file, "/user")
+		if err != nil {
+			log.Println(err)
+			return user.Core{}, errors.New("failed to upload image")
+		}
+		updateUser.Avatar = uploadURL.SecureURL
 	}
 
 	res, err := us.qry.UpdateRepo(id, updateUser)
@@ -183,21 +184,6 @@ func (us *userService) RemoveServ(token interface{}) error {
 var (
 	validate = validator.New()
 )
-
-func (us *userService) FileUpload(file user.FileCore) (string, error) {
-	//validate
-	err := validate.Struct(file)
-	if err != nil {
-		return "", err
-	}
-
-	//upload
-	uploadUrl, err := helper.ImageUploadHelper(file.File)
-	if err != nil {
-		return "", err
-	}
-	return uploadUrl, nil
-}
 
 func (us *userService) UpdatePassServ(token interface{}, oldPass string, newPass user.Core) (user.Core, error) {
 	id := uint(helper.ExtractToken(token))
