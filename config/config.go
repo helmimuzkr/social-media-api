@@ -9,12 +9,7 @@ import (
 )
 
 var (
-<<<<<<< HEAD
-	JWT_KEY string
-
-=======
 	JWT_KEY                string
->>>>>>> b870c4b (feat: tambah fitur update user untuk upload avatar)
 	CloudinaryName         string
 	CloudinaryApiKey       string
 	CloudinaryApiScret     string
