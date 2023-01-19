@@ -1,14 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"social-media-app/config"
-	_postHandler "social-media-app/feature/post/handler"
-	_postRepository "social-media-app/feature/post/repository"
-	_postService "social-media-app/feature/post/service"
+	postHandler "social-media-app/feature/post/handler"
+	postRepository "social-media-app/feature/post/repository"
+	postService "social-media-app/feature/post/service"
+	"time"
 
-	"github.com/go-playground/validator"
-	"github.com/labstack/echo"
+	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -20,16 +24,24 @@ func main() {
 
 	// Setup feature
 	// Post
-	postRepo := _postRepository.NewPostRepository(db)
-	postSrv := _postService.NewPostService(postRepo, v)
-	postHandler := _postHandler.NewPostHandler(postSrv)
+	postRepo := postRepository.NewPostRepository(db)
+	postSrv := postService.NewPostService(postRepo, v)
+	postHandler := postHandler.NewPostHandler(postSrv)
 
 	e := echo.New()
 
-	e.POST("/posts", postHandler.Create())
-	e.GET("/posts", postHandler.MyPost())
-	e.PUT("/posts/:post_id", postHandler.Update())
-	e.DELETE("/posts/:post_id", postHandler.Delete())
+	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.CORS())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format:           "${time_custom}, method=${method}, uri=${uri}, status=${status}\n",
+		CustomTimeFormat: "2006-01-02 15:04:05",
+	}))
+
+
+	e.POST("/posts", postHandler.Create(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/posts", postHandler.MyPost(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.PUT("/posts/:post_id", postHandler.Update(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.DELETE("/posts/:post_id", postHandler.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.GET("/posts/:post_id", postHandler.GetByID())
 	e.GET("/posts/list/:user_id", postHandler.GetByUserID())
 	e.GET("/posts/list", postHandler.GetAll())
