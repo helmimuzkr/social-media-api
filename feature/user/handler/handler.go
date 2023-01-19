@@ -66,12 +66,8 @@ func (uc *userControll) ProfileHand() echo.HandlerFunc {
 
 func (uc *userControll) SearchHand() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		input := SearchReq{}
-		if err := c.Bind(&input); err != nil {
-			return c.JSON(http.StatusBadRequest, "Invalid input format") //http.StatusBadRequest bisa diganti dengan 400
-		}
-		log.Println(input.Name)
-		res, err := uc.srv.SearchServ(input.Name)
+		name := c.QueryParam("name")
+		res, err := uc.srv.SearchServ(name)
 		if err != nil {
 			return c.JSON(ErrorResponse(err.Error()))
 		}
