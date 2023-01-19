@@ -285,6 +285,12 @@ paths:
             description: Update my post
             security:
                 - jwt_auth: []
+            parameters:
+                - name: post_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
             requestBody:
                 $ref: "#/components/requestBodies/post_request"
             responses:
@@ -310,6 +316,12 @@ paths:
             summary: Delete my post
             security:
                 - jwt_auth: []
+            parameters:
+                - name: post_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
             responses:
                 200:
                     description: success delete my post
