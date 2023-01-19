@@ -1,6 +1,7 @@
 package repository
 
 import (
+	comment "social-media-app/feature/comment/repository"
 	"social-media-app/feature/post"
 
 	"gorm.io/gorm"
@@ -8,10 +9,11 @@ import (
 
 type Post struct {
 	gorm.Model
-	UserID   uint
 	Caption  string
 	Image    string
 	PublicID string
+	UserID   uint
+	Comments []comment.Comment `gorm:"foreignKey:PostID"`
 }
 
 type UserPost struct {
