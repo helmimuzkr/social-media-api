@@ -5,7 +5,7 @@ import "github.com/labstack/echo/v4"
 type Core struct {
 	ID        uint
 	Name      string
-	Comment   string
+	Comment   string `validate:"required"`
 	Avatar    string
 	CreatedAt string
 	UpdatedAt string
