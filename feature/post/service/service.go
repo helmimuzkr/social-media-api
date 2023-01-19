@@ -158,7 +158,7 @@ func (ps *postService) Delete(token interface{}, postID uint) error {
 
 	if err := helper.DestroyFile(res.PublicID); err != nil {
 		log.Println(err)
-		return errors.New("failed to upload image")
+		return errors.New("failed to delete image")
 	}
 
 	return nil
@@ -170,15 +170,11 @@ func (ps *postService) GetByUserID(userID uint) ([]post.Core, error) {
 		log.Println(err)
 		var msg string
 		if strings.Contains(err.Error(), "not found") {
-			msg = "post not found"
+			msg = "user not found"
 		} else {
 			msg = "internal server error"
 		}
 		return nil, errors.New(msg)
-	}
-
-	if len(res) < 1 {
-		return nil, errors.New("post not found")
 	}
 
 	return res, nil
@@ -204,17 +200,7 @@ func (ps *postService) GetAll() ([]post.Core, error) {
 	res, err := ps.repo.GetAll()
 	if err != nil {
 		log.Println(err)
-		var msg string
-		if strings.Contains(err.Error(), "not found") {
-			msg = "post not found"
-		} else {
-			msg = "internal server error"
-		}
-		return nil, errors.New(msg)
-	}
-
-	if len(res) < 1 {
-		return nil, errors.New("post not found")
+		return nil, errors.New("internal server error")
 	}
 
 	return res, nil
