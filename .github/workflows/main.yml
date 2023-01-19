@@ -27,7 +27,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/book-api:latest ## my image
+          tags:  ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest ## my image
       - 
         name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
