@@ -3,7 +3,7 @@ module social-media-app
 go 1.19
 
 require (
-	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.4.0
 	github.com/labstack/echo v3.3.10+incompatible
 	gorm.io/driver/mysql v1.4.5
