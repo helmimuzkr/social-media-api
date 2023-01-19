@@ -11,7 +11,7 @@ type User struct {
 	FirstName string `gorm:"not_null"`
 	LastName  string `gorm:"not_null"`
 	Email     string `gorm:"not_null;unique"`
-	Password  string `gorm:"not_null" validate:"require"`
+	Password  string `gorm:"not_null"`
 	Avatar    string
 }
 

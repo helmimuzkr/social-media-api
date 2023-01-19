@@ -47,6 +47,8 @@ func ErrorResponse(message string) (int, interface{}) {
 		code = http.StatusBadRequest
 	} else if strings.Contains(message, "not found") {
 		code = http.StatusNotFound
+	} else {
+		code = http.StatusInternalServerError
 	}
 	return code, response
 }

@@ -3,7 +3,9 @@
 package handler
 
 import (
+	"log"
 	"social-media-app/features/user"
+	"strconv"
 
 	"net/http"
 
@@ -62,6 +64,34 @@ func (uc *userControll) ProfileHand() echo.HandlerFunc {
 	}
 }
 
+func (uc *userControll) SearchHand() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		input := SearchReq{}
+		if err := c.Bind(&input); err != nil {
+			return c.JSON(http.StatusBadRequest, "Invalid input format") //http.StatusBadRequest bisa diganti dengan 400
+		}
+		log.Println(input.Name)
+		res, err := uc.srv.SearchServ(input.Name)
+		if err != nil {
+			return c.JSON(ErrorResponse(err.Error()))
+		}
+		return c.JSON(SuccessResponse(http.StatusOK, "berhasil lihat profil", res))
+	}
+}
+
+func (uc *userControll) GetByIdHand() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		paramID := c.Param("id")
+		cnvID, err := strconv.Atoi(paramID)
+		log.Println(cnvID)
+		res, err := uc.srv.GetByIdServ(uint(cnvID))
+		if err != nil {
+			return c.JSON(ErrorResponse(err.Error()))
+		}
+		return c.JSON(SuccessResponse(http.StatusOK, "berhasil menampilkan user", res))
+	}
+}
+
 func (uc *userControll) UpdateHand() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var er error
@@ -72,6 +102,7 @@ func (uc *userControll) UpdateHand() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "Invalid input format")
 		}
 		var formfile user.FileCore
+	
 		formfile.File, _, er = c.Request().FormFile("photo")
 		if er != nil {
 			// log.Println("Bind error", err.Error())
@@ -100,5 +131,21 @@ func (uc *userControll) RemoveHand() echo.HandlerFunc {
 			return c.JSON(ErrorResponse(err.Error()))
 		}
 		return c.JSON(http.StatusOK, "Akun berhasil dihapus")
+	}
+}
+
+func (uc *userControll) UpdatePassHand() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		token := c.Get("user")
+		input := UpdateReq{}
+		if err := c.Bind(&input); err != nil {
+			// log.Println("Bind error", err.Error())
+			return c.JSON(http.StatusBadRequest, "Invalid input format")
+		}
+		res, err := uc.srv.UpdateServ(token, *ToCore(input))
+		if err != nil {
+			return c.JSON(ErrorResponse(err.Error()))
+		}
+		return c.JSON(SuccessResponse(http.StatusOK, "update success", res))
 	}
 }

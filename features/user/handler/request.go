@@ -19,10 +19,10 @@ type LoginReq struct {
 }
 
 type RegisterReq struct {
-	FirstName string `json:"firstname" form:"firstname" validate:"required"`
-	LastName  string `json:"lastname" form:"lastname" validate:"required"`
-	Email     string `json:"email" form:"email" validate:"required, email"`
-	Password  string `json:"password" form:"password" validate:"required"`
+	FirstName string `json:"firstname" form:"firstname"`
+	LastName  string `json:"lastname" form:"lastname"`
+	Email     string `json:"email" form:"email"`
+	Password  string `json:"password" form:"password"`
 }
 
 type UpdateReq struct {
@@ -31,6 +31,15 @@ type UpdateReq struct {
 	LastName  string `json:"lastname" form:"lastname"`
 	Email     string `json:"email" form:"email"`
 	Password  string `json:"password" form:"password"`
+}
+
+type UpdatePass struct {
+	OldPassword  string `json:"old_password" form:"old_password"`
+	NewPassword  string `json:"new_password" form:"new_password"`
+}
+
+type SearchReq struct {
+	Name string `json:"name" form:"name"`
 }
 
 // Semua input request akan di convert ke Core struct

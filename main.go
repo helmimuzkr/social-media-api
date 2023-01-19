@@ -16,6 +16,7 @@ import (
 	"social-media-app/features/user/repository"
 	"social-media-app/features/user/services"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -57,17 +58,21 @@ func main() {
 
 
 	userRepo := repository.New(db)
-	userSrv := services.New(userRepo)
+	userSrv := services.New(userRepo, v)
 	userHdl := handler.New(&userSrv)
 	
 	e.POST("/register", userHdl.RegisterHand())
 	e.POST("/login", userHdl.LoginHand())
-		
+
+	
 	userLogin := e.Group("/users")
 	userLogin.Use(middleware.JWT([]byte(config.JWT_KEY)))
-
+	
+	e.GET("/search", userHdl.SearchHand(), middleware.JWT([]byte(config.JWT_KEY)))
+	userLogin.GET("/:id", userHdl.GetByIdHand())
 	userLogin.GET("", userHdl.ProfileHand())
 	userLogin.PUT("", userHdl.UpdateHand())
+	userLogin.PUT("/password", userHdl.UpdatePassHand())
 	userLogin.DELETE("", userHdl.RemoveHand())
 
 	if err := e.Start(":8000"); err != nil {
