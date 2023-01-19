@@ -97,7 +97,7 @@ func (uc *userControll) UpdateHand() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "Invalid input format")
 		}
 
-		file, err := c.FormFile("photo")
+		file, err := c.FormFile("avatar")
 		if err != nil {
 			// log.Println("Bind error", err.Error())
 			return c.JSON(http.StatusBadRequest, "Insert photo")
