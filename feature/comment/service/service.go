@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 	"social-media-app/feature/comment"
 	"social-media-app/helper"
 	"strings"
@@ -33,13 +34,13 @@ func (cs *commentService) Add(token interface{}, postID uint, newComment string)
 	}
 
 	if err := cs.repo.Add(uint(userID), postID, newComment); err != nil {
+		log.Println(err)
 		msg := ""
 		if strings.Contains(err.Error(), "not found") {
 			msg = "post not found"
 		} else {
 			msg = "internal server error, failed add comment"
 		}
-
 		return errors.New(msg)
 	}
 
